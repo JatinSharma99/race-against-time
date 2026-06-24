@@ -1,220 +1,332 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Race Against Time - M0 Case Login</title>
-
+<title>Race Against Time — M0 Case Login</title>
 <style>
-
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
+*{margin:0;padding:0;box-sizing:border-box;}
 
 html,body{
-    width:100%;
-    height:100%;
-    overflow:hidden;
-    background:#ffffff;
-    font-family:Arial, sans-serif;
+  width:100%;height:100vh;
+  overflow:hidden;
+  font-family:Arial,sans-serif;
+  background:#000;color:#fff;
 }
 
 body{
-    display:flex;
-    justify-content:center;
-    align-items:center;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  position:relative;
+}
+
+canvas#bg{
+  position:absolute;top:0;left:0;
+  width:100%;height:100%;
+  z-index:0;
 }
 
 .container{
-    width:100%;
-    height:100%;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
-    text-align:center;
-    padding:40px;
+  position:relative;z-index:2;
+  text-align:center;
+  width:96%;max-width:1500px;
+  display:flex;flex-direction:column;
+  align-items:center;gap:0;
 }
 
-/* LOGO */
+/* Badge */
+.badge{
+  font-size:11px;
+  letter-spacing:8px;
+  color:#ff3b3b;
+  font-weight:700;
+  text-transform:uppercase;
+  margin-bottom:14px;
+  animation:blink 1.2s ease-in-out infinite;
+}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.2;}}
 
-.logo{
-    height:90px;
-    margin-bottom:40px;
+/* Title — single line, no wrap */
+.title{
+  font-size:clamp(30px,5.8vw,76px);
+  font-weight:900;
+  line-height:1.05;
+  text-transform:uppercase;
+  letter-spacing:3px;
+  color:#fff;
+  white-space:nowrap;
+  text-shadow:0 0 40px rgba(255,0,0,.5),0 0 80px rgba(255,0,0,.2);
+  margin-bottom:10px;
+}
+.title .red{color:#ff2020;}
+
+/* Subtitle — single line */
+.subtitle{
+  font-size:clamp(13px,2vw,26px);
+  font-weight:400;
+  letter-spacing:2px;
+  color:#ccc;
+  white-space:nowrap;
+  margin-bottom:10px;
 }
 
-/* HEADING */
-
-.main-title{
-    font-family:"Bookman Old Style", serif;
-    font-size:34px;
-    font-weight:bold;
-    color:#004F98;
-    text-transform:uppercase;
-    line-height:1.4;
-    margin-bottom:40px;
+/* Tagline */
+.tagline{
+  font-size:clamp(9px,1.2vw,14px);
+  letter-spacing:5px;
+  color:#888;
+  text-transform:uppercase;
+  margin-bottom:18px;
 }
 
-/* COUNTDOWN */
-
-.countdown{
-    display:flex;
-    gap:50px;
-    margin-bottom:50px;
+/* Divider */
+.divider{
+  width:120px;height:1px;
+  background:linear-gradient(90deg,transparent,#ff2020,transparent);
+  margin-bottom:18px;
 }
 
-.time-box{
-    min-width:140px;
+/* Timer label */
+.timer-label{
+  font-size:10px;
+  letter-spacing:6px;
+  color:#ff4444;
+  text-transform:uppercase;
+  margin-bottom:12px;
 }
 
-.time{
-    font-family:"Courier New", monospace;
-    font-size:72px;
-    font-weight:bold;
-    color:#004F98;
+/* Timer */
+.timer{
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
+  gap:0;
+  flex-wrap:nowrap;
 }
 
-.label{
-    font-size:14px;
-    letter-spacing:2px;
-    color:#666;
-    font-weight:bold;
-    margin-top:10px;
+.unit-block{
+  display:flex;flex-direction:column;
+  align-items:center;
+  min-width:clamp(80px,11vw,155px);
 }
 
-/* COMING SOON */
+.num{
+  font-size:clamp(50px,10vw,118px);
+  font-weight:700;
+  font-family:'Courier New',monospace;
+  color:#ff1a1a;
+  line-height:1;
+  filter:drop-shadow(0 0 14px #ff0000cc) drop-shadow(0 0 30px #ff000055);
+  transition:transform .08s ease,color .08s ease;
+  user-select:none;
+}
+.num.pop{transform:scale(1.1);color:#ff7777;}
 
-.coming-soon{
-    font-size:20px;
-    letter-spacing:8px;
-    color:#004F98;
-    margin-bottom:25px;
-    animation:fade 2s infinite;
+.sep{
+  font-size:clamp(38px,8vw,96px);
+  color:#550000;
+  line-height:1;
+  padding:0 clamp(4px,1vw,10px);
+  align-self:flex-start;
+  margin-top:2px;
+  font-weight:900;
+  font-family:'Courier New',monospace;
+  animation:sepPulse 1s steps(1) infinite;
+}
+@keyframes sepPulse{0%{opacity:1;}50%{opacity:.15;}}
+
+.unit-name{
+  font-size:clamp(9px,1.1vw,13px);
+  letter-spacing:4px;
+  color:#fff;
+  text-transform:uppercase;
+  margin-top:6px;
 }
 
-@keyframes fade{
-    50%{
-        opacity:.4;
-    }
-}
-
-.description{
-    max-width:1100px;
-    font-size:22px;
-    line-height:1.8;
-    color:#444;
-}
-
+/* Footer */
 .footer{
-    position:absolute;
-    bottom:25px;
-    font-size:16px;
-    color:#777;
-    letter-spacing:2px;
+  margin-top:22px;
+  font-size:10px;
+  letter-spacing:5px;
+  color:#fff;
+  text-transform:uppercase;
 }
-
 </style>
 </head>
-
 <body>
+
+<canvas id="bg"></canvas>
 
 <div class="container">
 
-    <!-- Replace logo.png with your uploaded logo filename -->
-    <img src="logo.png" class="logo" alt="Logo">
+  <div class="badge">⬤ &nbsp;Contest Live Now&nbsp; ⬤</div>
 
-    <div class="main-title">
-        Race Against Time - M0 Case Login
+  <div class="title">Race Against Time &nbsp;—&nbsp; <span class="red">M0</span> Case Login</div>
+
+  <div class="subtitle">An initiative to chase M0 Case Login</div>
+
+  <div class="tagline">Every Minute Counts &nbsp;·&nbsp; Every Case Matters</div>
+
+  <div class="divider"></div>
+
+  <div class="timer-label">⏱ &nbsp;Countdown to Launch</div>
+
+  <div class="timer">
+    <div class="unit-block">
+      <div class="num" id="dd">00</div>
+      <div class="unit-name">Days</div>
     </div>
-
-    <div class="countdown">
-
-        <div class="time-box">
-            <div class="time" id="days">00</div>
-            <div class="label">DAYS</div>
-        </div>
-
-        <div class="time-box">
-            <div class="time" id="hours">00</div>
-            <div class="label">HOURS</div>
-        </div>
-
-        <div class="time-box">
-            <div class="time" id="minutes">00</div>
-            <div class="label">MINUTES</div>
-        </div>
-
-        <div class="time-box">
-            <div class="time" id="seconds">00</div>
-            <div class="label">SECONDS</div>
-        </div>
-
+    <div class="sep">:</div>
+    <div class="unit-block">
+      <div class="num" id="hh">00</div>
+      <div class="unit-name">Hours</div>
     </div>
-
-    <div class="coming-soon">
-        COMING SOON
+    <div class="sep">:</div>
+    <div class="unit-block">
+      <div class="num" id="mm">00</div>
+      <div class="unit-name">Minutes</div>
     </div>
-
-    <div class="description">
-        A focused performance initiative designed to accelerate M0 Case Login achievement through visibility, competition, recognition, and operational excellence.
-        <br><br>
-        Stay tuned for the official launch.
+    <div class="sep">:</div>
+    <div class="unit-block">
+      <div class="num" id="ss">00</div>
+      <div class="unit-name">Seconds</div>
     </div>
+  </div>
 
-</div>
+  <div class="footer">Policybazaar &nbsp;·&nbsp; Life CRT Training Team Initiative</div>
 
-<div class="footer">
-    POLICYBAZAAR • OPERATIONS EXCELLENCE INITIATIVE
 </div>
 
 <script>
+/* ── SPEED STREAKS BACKGROUND ── */
+const canvas = document.getElementById('bg');
+const ctx = canvas.getContext('2d');
+let W, H;
 
-/*
-CHANGE THIS DATE
-Example:
-2025-07-15T09:00:00
-*/
+function resize(){
+  W = canvas.width  = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', resize);
 
-const launchDate = new Date("2025-12-31T00:00:00").getTime();
+const NUM_LINES = 180;
 
-setInterval(function(){
+function makeStreak(){
+  const angle = Math.random() * Math.PI * 2;
+  const r     = Math.random() * 0.04;
+  return {
+    x     : 0.5 + Math.cos(angle) * r,
+    y     : 0.5 + Math.sin(angle) * r,
+    nx    : Math.cos(angle),
+    ny    : Math.sin(angle),
+    len   : 0.1 + Math.random() * 0.28,
+    speed : 0.010 + Math.random() * 0.030,
+    alpha : 0.45 + Math.random() * 0.55,
+    w     : 0.8  + Math.random() * 2.2,
+    type  : Math.random() < 0.75 ? 'red'
+          : Math.random() < 0.55 ? 'amber'
+          : 'blue'
+  };
+}
 
-    const now = new Date().getTime();
+const streaks = Array.from({length: NUM_LINES}, makeStreak);
 
-    const distance = launchDate - now;
+const COLORS = {
+  red  : (a) => `rgba(255,30,10,${a})`,
+  amber: (a) => `rgba(255,160,30,${a * .6})`,
+  blue : (a) => `rgba(80,120,255,${a * .4})`
+};
 
-    const days = Math.floor(distance / (1000*60*60*24));
+function drawFrame(){
+  ctx.fillStyle = 'rgba(0,0,0,0.12)';
+  ctx.fillRect(0, 0, W, H);
 
-    const hours = Math.floor(
-        (distance % (1000*60*60*24))
-        /
-        (1000*60*60)
-    );
+  const cx = W * 0.5, cy = H * 0.5;
 
-    const minutes = Math.floor(
-        (distance % (1000*60*60))
-        /
-        (1000*60)
-    );
+  streaks.forEach(s => {
+    const px = s.x * W;
+    const py = s.y * H;
 
-    const seconds = Math.floor(
-        (distance % (1000*60))
-        /
-        1000
-    );
+    const dx = px - cx, dy = py - cy;
+    const dist = Math.sqrt(dx*dx + dy*dy) || 1;
+    const tail = s.len * dist;
 
-    document.getElementById("days").innerHTML = days;
-    document.getElementById("hours").innerHTML = hours;
-    document.getElementById("minutes").innerHTML = minutes;
-    document.getElementById("seconds").innerHTML = seconds;
+    const x0 = px - s.nx * tail;
+    const y0 = py - s.ny * tail;
 
-},1000);
+    const grd = ctx.createLinearGradient(x0, y0, px, py);
+    grd.addColorStop(0, 'rgba(0,0,0,0)');
+    grd.addColorStop(0.5, COLORS[s.type](s.alpha * 0.4));
+    grd.addColorStop(1, COLORS[s.type](s.alpha));
 
+    ctx.beginPath();
+    ctx.moveTo(x0, y0);
+    ctx.lineTo(px, py);
+    ctx.strokeStyle = grd;
+    ctx.lineWidth   = s.w;
+    ctx.stroke();
+
+    s.x += s.nx * s.speed;
+    s.y += s.ny * s.speed;
+
+    const ox = s.x * W, oy = s.y * H;
+    if(ox < -100 || ox > W + 100 || oy < -100 || oy > H + 100){
+      Object.assign(s, makeStreak());
+    }
+  });
+
+  /* warm center glow */
+  const glow = ctx.createRadialGradient(cx,cy,0,cx,cy,Math.min(W,H)*0.3);
+  glow.addColorStop(0,'rgba(180,0,0,0.18)');
+  glow.addColorStop(0.5,'rgba(80,0,0,0.08)');
+  glow.addColorStop(1,'rgba(0,0,0,0)');
+  ctx.fillStyle = glow;
+  ctx.fillRect(0,0,W,H);
+
+  /* vignette */
+  const vig = ctx.createRadialGradient(cx,cy,H*0.15,cx,cy,H*0.78);
+  vig.addColorStop(0,'rgba(0,0,0,0)');
+  vig.addColorStop(1,'rgba(0,0,0,0.72)');
+  ctx.fillStyle = vig;
+  ctx.fillRect(0,0,W,H);
+
+  requestAnimationFrame(drawFrame);
+}
+drawFrame();
+
+/* ── COUNTDOWN ── */
+const LAUNCH = new Date("2026-07-01T00:00:00").getTime();
+const pad = n => String(Math.max(0, n)).padStart(2, '0');
+let prevSec = -1;
+
+function flash(id){
+  const el = document.getElementById(id);
+  el.classList.add('pop');
+  setTimeout(() => el.classList.remove('pop'), 120);
+}
+
+function tick(){
+  const now  = Date.now();
+  const diff = Math.max(0, LAUNCH - now);
+
+  const days = Math.floor(diff / 864e5);
+  const hrs  = Math.floor((diff % 864e5) / 36e5);
+  const mins = Math.floor((diff % 36e5) / 6e4);
+  const secs = Math.floor((diff % 6e4) / 1e3);
+
+  document.getElementById('dd').textContent = pad(days);
+  document.getElementById('hh').textContent = pad(hrs);
+  document.getElementById('mm').textContent = pad(mins);
+  document.getElementById('ss').textContent = pad(secs);
+
+  if(secs !== prevSec){ flash('ss'); prevSec = secs; }
+}
+
+tick();
+setInterval(tick, 500);
 </script>
-
 </body>
 </html>
