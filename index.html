@@ -42,9 +42,17 @@ body{
 }
 @keyframes blink{0%,100%{opacity:1;}50%{opacity:.2;}}
 
-/* Title — single line, no wrap */
+/* Title — single line, no wrap, stays fixed in place */
+.title-wrap{
+  width:100%;
+  overflow:hidden;
+  position:relative;
+  margin-bottom:10px;
+  display:flex;
+  justify-content:center;
+}
 .title{
-  font-size:clamp(30px,5.8vw,76px);
+  font-size:clamp(20px,3.4vw,40px);
   font-weight:900;
   line-height:1.05;
   text-transform:uppercase;
@@ -52,9 +60,37 @@ body{
   color:#fff;
   white-space:nowrap;
   text-shadow:0 0 40px rgba(255,0,0,.5),0 0 80px rgba(255,0,0,.2);
-  margin-bottom:10px;
+  position:relative;
+  display:inline-block;
 }
 .title .red{color:#ff2020;}
+
+/* speeding streak that sweeps left-to-right over the static text */
+.title::after{
+  content:"";
+  position:absolute;
+  top:0;
+  left:-30%;
+  width:35%;
+  height:100%;
+  background:linear-gradient(
+    100deg,
+    rgba(255,255,255,0) 0%,
+    rgba(255,255,255,.55) 50%,
+    rgba(255,255,255,0) 100%
+  );
+  mix-blend-mode:overlay;
+  animation:speedSweep 2.4s ease-in-out infinite;
+  pointer-events:none;
+}
+
+@keyframes speedSweep{
+  0%{   left:-30%; opacity:0;   }
+  10%{  opacity:1; }
+  55%{  left:115%; opacity:1;   }
+  65%{  opacity:0; }
+  100%{ left:115%; opacity:0;   }
+}
 
 /* Subtitle — single line, larger, scrolls left-to-right and back */
 .subtitle-wrap{
@@ -63,22 +99,16 @@ body{
   overflow:hidden;
   margin-bottom:12px;
   position:relative;
+  text-align:center;
 }
 .subtitle{
-  font-size:clamp(20px,3.4vw,40px);
+  font-size:clamp(30px,5.8vw,76px);
   font-weight:700;
   letter-spacing:2px;
-  color:#ccc;
+  color:#fff;
   white-space:nowrap;
   display:inline-block;
   position:relative;
-  --travel:0px;
-  animation:slideBack 7s ease-in-out infinite;
-}
-@keyframes slideBack{
-  0%   { transform:translateX(0); }
-  50%  { transform:translateX(var(--travel)); }
-  100% { transform:translateX(0); }
 }
 
 /* Tagline */
@@ -170,10 +200,12 @@ body{
 
   <div class="badge">⬤ &nbsp;Contest Live Now&nbsp; ⬤</div>
 
-  <div class="title">Race Against <span class="red">Time</span></div>
-
   <div class="subtitle-wrap">
-    <div class="subtitle">An initiative to chase M0 Case Login</div>
+    <div class="subtitle">M0 Case Login</div>
+  </div>
+
+  <div class="title-wrap">
+    <div class="title">Race Against <span class="red">Time</span></div>
   </div>
 
   <div class="tagline">Every Minute Counts &nbsp;·&nbsp; Every Case Matters</div>
@@ -209,24 +241,6 @@ body{
 </div>
 
 <script>
-
-/* ── SUBTITLE MARQUEE (left -> right -> left) ── */
-(function(){
-  const wrap = document.querySelector('.subtitle-wrap');
-  const sub  = document.querySelector('.subtitle');
-
-  function setRange(){
-    const wrapWidth = wrap.offsetWidth;
-    const textWidth  = sub.scrollWidth;
-    // how far the text overflows the visible box; if it doesn't overflow,
-    // still give it a gentle nudge so the motion is visible
-    const overflow = textWidth - wrapWidth;
-    const travel = overflow > 0 ? -overflow : -Math.min(40, wrapWidth * 0.08);
-    sub.style.setProperty('--travel', `${travel}px`);
-  }
-  setRange();
-  window.addEventListener('resize', setRange);
-})();
 
 /* ── COUNTDOWN ── */
 const LAUNCH = new Date("2026-06-30T23:59:59").getTime();
